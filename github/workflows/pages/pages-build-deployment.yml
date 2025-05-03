@@ -19,30 +19,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3  # Checkout the repository
+        uses: actions/checkout@v3  # Correct GitHub Actions syntax
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1  # Set up Ruby environment
+        uses: ruby/setup-ruby@v1  # Correct GitHub Actions syntax
         with:
-          ruby-version: 3.1  # Specify the Ruby version
+          ruby-version: 3.1  # Ruby version you want to use
 
       - name: Install dependencies
         run: |
           gem install bundler
-          bundle install  # Install all dependencies defined in Gemfile
+          bundle install  # This installs dependencies defined in Gemfile
 
       - name: Build site
         run: |
           bundle exec jekyll build  # Build the Jekyll site
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1  # Upload the built site to be deployed
-        with:
-          path: ./_site  # Specify the directory containing the built site
-
-  deploy:
-    needs: build  # Ensure the deploy job runs after the build job
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1  # Deploy the site to GitHub Pages
+        uses: actions/upload-pages-artifact@v1  #

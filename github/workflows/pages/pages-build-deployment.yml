@@ -1,4 +1,4 @@
-name: Pages build and deployment
+name: CI/CD Workflow for Build, Report, and Deploy
 
 on:
   push:
@@ -19,21 +19,43 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3  # Correct GitHub Actions syntax
+        uses: actions/checkout@v3
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1  # Correct GitHub Actions syntax
+      - name: Set up environment
+        uses: actions/setup-node@v3  # Or setup any other environment (e.g., Node.js, Ruby)
         with:
-          ruby-version: 3.1  # Ruby version you want to use
+          node-version: '16'
 
       - name: Install dependencies
         run: |
-          gem install bundler
-          bundle install  # This installs dependencies defined in Gemfile
+          npm install  # Adjust if your project uses different package managers
 
       - name: Build site
         run: |
-          bundle exec jekyll build  # Build the Jekyll site
+          npm run build  # Adjust with the correct build command
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1  #
+        uses: actions/upload-artifact@v2
+        with:
+          name: github-pages
+          path: ./dist  # Adjust to your build directory
+
+      - name: Post Checkout cleanup
+        run: |
+          git config --global --add safe.directory /home/runner/work/_temp
+          git config --local --unset-all core.sshCommand
+
+      - name: Cleaning up orphan processes
+        run: |
+          pkill -9 $(pgrep -f "your_process_name")  # Adjust as needed
+
+  report-build-status:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Set up job
+        run: |
+          echo "Setting up report build status job"
+
+      - name: Report build status
+        run: |
